@@ -3,8 +3,15 @@
 // REF: https://adventofcode.com/2022/day/1
 use std::fs;
 
+#[derive(Clone)] // we add the Clone trait to Elf struct
 struct Elf {
     calories_carried: usize,
+}
+
+fn get_sum_top_three_calories(elves_vec: &mut Vec<Elf>) -> usize {
+    elves_vec.sort_by_key(|elf| elf.calories_carried);
+    elves_vec.reverse();
+    elves_vec[0].calories_carried + elves_vec[1].calories_carried + elves_vec[2].calories_carried
 }
 
 fn get_max_calories(elves_vec: Vec<Elf>) -> usize {
@@ -50,7 +57,12 @@ fn main() {
         fs::read_to_string(file_path).expect("Missing or cannot open file input.txt");
 
     let elves_vec = parse_string(file_content);
+    let mut elves_vec2 = elves_vec.clone();
     println!("Max calories: {}", get_max_calories(elves_vec));
+    println!(
+        "Sum of top three: {}",
+        get_sum_top_three_calories(&mut elves_vec2)
+    );
 }
 
 // Test cases
@@ -59,7 +71,7 @@ mod tests {
     use super::*; // <-- import everything from the parent module
 
     #[test]
-    fn it_works() {
+    fn part_1() {
         let test_string: String = String::from(
             "
         1000
@@ -81,5 +93,30 @@ mod tests {
 
         let elves_vec = parse_string(test_string);
         assert_eq!(get_max_calories(elves_vec), 24000);
+    }
+
+    #[test]
+    fn part_2() {
+        let test_string: String = String::from(
+            "
+        1000
+        2000
+        3000
+        
+        4000
+        
+        5000
+        6000
+        
+        7000
+        8000
+        9000
+        
+        10000
+        ",
+        );
+
+        let mut elves_vec = parse_string(test_string);
+        assert_eq!(get_sum_top_three_calories(&mut elves_vec), 45000);
     }
 }
