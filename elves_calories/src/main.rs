@@ -4,37 +4,27 @@
 use std::fs;
 
 struct Elf {
-    item_calories: Vec<usize>,
-}
-
-impl Elf {
-    fn get_calories_count(self) -> usize {
-        let mut count = 0;
-        for i in self.item_calories {
-            count += i;
-        }
-        count
-    }
+    calories_carried: usize,
 }
 
 fn get_max_calories(elves_vec: Vec<Elf>) -> usize {
-    let mut max_calories = 0;
-    for i in elves_vec {
-        let calories = i.get_calories_count();
-        if calories > max_calories {
-            max_calories = calories;
-        }
+    let max = elves_vec.iter().max_by_key(|elf| elf.calories_carried);
+    match max {
+        Some(_) => max.unwrap().calories_carried,
+        None => 0,
     }
-    max_calories
 }
 
 fn get_elf_from_calories(calories_string: Vec<String>) -> Elf {
     let mut elf = Elf {
-        item_calories: Vec::new(),
+        calories_carried: 0,
     };
-    for i in calories_string {
-        elf.item_calories.push(i.parse::<usize>().unwrap());
+    let mut input_count: usize = 0;
+    for number in calories_string {
+        let parsed_number = number.parse::<usize>().unwrap();
+        input_count += parsed_number;
     }
+    elf.calories_carried = input_count;
     elf
 }
 
